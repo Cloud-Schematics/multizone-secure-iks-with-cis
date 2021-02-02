@@ -39,7 +39,7 @@ resource ibm_is_public_gateway gateway {
 module subnets {
   source           = "./module_vpc_tier" 
   ibm_region       = var.ibm_region 
-  unique_id        = "${var.unique_id}"                      
+  unique_id        = var.unique_id                    
   acl_id           = ibm_is_network_acl.multizone_acl.id
   cidr_blocks      = var.cidr_blocks
   vpc_id           = ibm_is_vpc.vpc.id
@@ -48,3 +48,5 @@ module subnets {
 }
 
 ##############################################################################
+
+

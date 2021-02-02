@@ -1,3 +1,4 @@
+
 ##############################################################################
 # Kubernetes Deployment
 ##############################################################################
@@ -36,6 +37,7 @@ resource kubernetes_deployment deployment {
             }
         }
     }
+
 }
 
 ##############################################################################
@@ -47,11 +49,11 @@ resource kubernetes_deployment deployment {
 
 resource kubernetes_service service {
     metadata {
-        name      = "${var.application_name}-svc"
+        name      = "${var.application_name}-deployment-svc"
         namespace = var.namespace
 
         labels = {
-            app = "${var.application_name}-deployment"
+            app = "${var.application_name}-deployment-svc"
         }
     }
 
@@ -65,11 +67,48 @@ resource kubernetes_service service {
         selector = {
             app = "${var.application_name}-deployment"
         }
+
     }
 
     depends_on = [ kubernetes_deployment.deployment ]
 
 }
+
+##############################################################################
+
+##############################################################################
+# Get IAM Auth Token
+##############################################################################
+
+data ibm_iam_auth_token token {}
+
+##############################################################################
+
+##############################################################################
+# Add Certificate to cluster via IKS API
+##############################################################################
+
+data ibm_iam_auth_token token {}
+
+resource null_resource create_cert_secret_via_api {
+
+    provisioner local-exec {
+        command = <<BASH
+
+curl -X POST https://containers.cloud.ibm.com/global/ingress/v2/secret/createSecret \
+    -H "Authorization: ${data.ibm_iam_auth_token.token.iam_access_token}" \
+    -d '{
+        "cluster" : "${data.ibm_container_vpc_cluster.cluster.id}",
+        "crn" : "${ibm_certificate_manager_order.cert.id}",
+        "name" : "${var.cert_name}",
+        "namespace" : "${var.namespace}",
+        "persistence" : true
+    }'
+        BASH 
+    }
+    
+}
+
 
 ##############################################################################
 
@@ -80,9 +119,11 @@ resource kubernetes_service service {
 
 resource kubernetes_ingress ingress {
     metadata {
-        name = "${var.application_name}-ingress"
+        name      = "${var.application_name}-ingress"
+        namespace = var.namespace
 
         annotations = {
+            // Needed to run ingress on IKS 
             "kubernetes.io/ingress.class" = "public-iks-k8s-nginx"
         }
     }
@@ -90,20 +131,20 @@ resource kubernetes_ingress ingress {
     spec {
         tls {
             hosts       = [
-                "${var.subdomain}.${data.ibm_container_vpc_cluster.cluster.ingress_hostname}"
+                var.domain
             ]
             secret_name = var.cert_name
         }
 
         rule {
-            host = "${var.subdomain}.${data.ibm_container_vpc_cluster.cluster.ingress_hostname}"
+            host = var.domain
 
             http {
                 path {
                     path = var.path
 
                     backend {
-                        service_name = "${var.application_name}-svc"
+                        service_name = "${var.application_name}-deployment-svc"
                         service_port = var.port
                     }
                 }
@@ -111,9 +152,10 @@ resource kubernetes_ingress ingress {
         }
     }
 
+    // Wait for secret to be created
     depends_on = [ 
         kubernetes_service.service,
-        ibm_certificate_manager_order.cert 
+        null_resource.create_cert_secret_via_api
     ]
 }
 

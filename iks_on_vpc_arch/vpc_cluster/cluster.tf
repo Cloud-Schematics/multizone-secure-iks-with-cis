@@ -14,10 +14,10 @@ resource ibm_container_vpc_cluster cluster {
   wait_till         = "IngressReady" #var.wait_till
 
   dynamic zones {
-    for_each = var.subnet_ids
+    for_each = var.subnets
     content {
-      subnet_id = zones.value
-      name      = "${var.ibm_region}-${index(var.subnet_ids, zones.value) + 1}"
+      subnet_id = zones.value.id
+      name      = zones.value.zone
     }
   }
   disable_public_service_endpoint = var.disable_public_service_endpoint
@@ -37,13 +37,7 @@ module worker_pools {
   vpc_id            = var.vpc_id
   resource_group_id = var.resource_group_id
   cluster_name_id   = ibm_container_vpc_cluster.cluster.id
-  subnets           = [
-      for i in var.subnet_ids:
-      {
-          id: i
-          zone: "${var.ibm_region}-${index(var.subnet_ids, i) + 1}"
-      }
-  ]
+  subnets           = var.subnets
 }
 
 ##############################################################################
@@ -54,7 +48,7 @@ module worker_pools {
 ##############################################################################
 
 resource ibm_container_vpc_alb alb {
-  count  = 2 * length(var.subnet_ids)
+  count  = 2 * length(var.subnets)
   alb_id = element(ibm_container_vpc_cluster.cluster.albs.*.id, count.index)
   enable = true
 }

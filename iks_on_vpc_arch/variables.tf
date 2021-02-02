@@ -282,7 +282,7 @@ variable acl_rules {
 }
 
 variable security_group_rules {
-  description = "List of security group rules to be added to default security group"
+  description = "Map of security group rules to be added to default security group"
   default     = {
     allow_all_inbound = {
       source    = "0.0.0.0/0"
@@ -317,7 +317,7 @@ variable disable_public_service_endpoint {
 }
 
 variable kube_version {
-    description = "Specify the Kubernetes version, including the major andminor version. To see available versions, run ibmcloud ks versions. To use the default, leave string empty"
+    description = "Specify the Kubernetes version, including the major and minor version. To see available versions, run ibmcloud ks versions. To use the default, leave string empty"
     type        = string
     default     = ""
 }

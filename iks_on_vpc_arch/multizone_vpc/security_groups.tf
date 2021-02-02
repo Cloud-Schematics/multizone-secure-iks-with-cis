@@ -16,7 +16,7 @@ locals {
       )
 }
 
-resource ibm_is_security_group_rule secure_cluster_sg_rules {
+resource ibm_is_security_group_rule default_vpc_sg_rules {
       for_each  = local.security_group_rules
       group     = ibm_is_vpc.vpc.default_security_group
       direction = each.value.direction
@@ -33,7 +33,7 @@ resource ibm_is_security_group_rule secure_cluster_sg_rules {
 
             for_each = (
                   contains(keys(each.value), "icmp")
-                  ? ["${each.value}"]
+                  ? [each.value]
                   : []
             )
                   # Conditianally add content if sg has icmp
@@ -68,7 +68,7 @@ resource ibm_is_security_group_rule secure_cluster_sg_rules {
 
             for_each = (
                   contains(keys(each.value), "tcp")
-                  ? ["${each.value}"]
+                  ? [each.value]
                   : []
             )
 
@@ -106,7 +106,7 @@ resource ibm_is_security_group_rule secure_cluster_sg_rules {
 
             for_each = (
                   contains(keys(each.value), "udp")
-                  ? ["${each.value}"]
+                  ? [each.value]
                   : []
             )
 

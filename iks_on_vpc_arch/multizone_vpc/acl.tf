@@ -5,14 +5,14 @@
 
 locals {
       allow_subnet_cidr_rules = [
-            for i in var.cidr_blocks:
-            {
-                  name        = "allow-traffic-subnet-${index(var.cidr_blocks, i) + 1}"
-                  action      = "allow"
-                  source      = i
-                  destination = "0.0.0.0/0"
-                  direction   = "inbound"
-            }
+            # for i in var.cidr_blocks:
+            # {
+            #       name        = "allow-traffic-subnet-${index(var.cidr_blocks, i) + 1}"
+            #       action      = "allow"
+            #       source      = i
+            #       destination = "0.0.0.0/0"
+            #       direction   = "inbound"
+            # }
       ]
       acl_rules = flatten(
             [

@@ -35,15 +35,11 @@ This sets up domain settings for your CIS instance. By default, it sets the TLS 
 
 ### DNS Record
 
-This creates a CNAME DNS record to point to the ingress hostname. By default, this is set to `www`.
+This creates a CNAME DNS record to point to the domain
 
 ### Certificate Manager Cert
 
 This orders a cert for the domain and adds it to the default CMS instance for your cluster.
-
-### Page Rule
-
-This creates a page rule that rewrites incoming host headers to be the ingress subdomain url. Page rules cannot be created with the IBM Terraform Provider, so this is created using the [IBM CIS API](https://cloud.ibm.com/apidocs/cis)
 
 ---
 
@@ -77,7 +73,6 @@ Variable                   | Type   | Description                               
 `cis_name`                 | string | Name of the CIS instance where resources will be provisioned          |
 `cis_plan`                 | string | Plan for CIS instance                                                 | `enterprise-usage`
 `subdomain`                | string | Name of the subdmain to use                                           | `test`
-`dns_subdomain`            | string | Subdomain for DNS record                                              | `www`
 `domain`                   | string | The domain to add to CIS                                              | `gcat-asset-test.com`
 `always_use_https`         | bool   | Always use HTTPS for domain                                           | `true`
 `automatic_https_rewrites` | bool   | Automatically rewrite HTTP requests                                   | `true`

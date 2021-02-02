@@ -67,16 +67,16 @@ You can use an access control list (ACL) to control all incoming and outgoing tr
 
 ## Module Variables
 
-| Variable                | Type   | Description                                                                      | Default                                                                                                                                                                                                               |
-| ----------------------- | ------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ibmcloud_api_key`      | sting  | The IBM Cloud platform API key needed to deploy IAM enabled resources            |
-| `unique_id`             | string | A unique prefix for the apps. Must begin with a letter.                          | `multizone-vpc`                                                                                                                                                                                                    |
-| `ibm_region`            | string | IBM Cloud region where all resources will be deployed                            |
-| `resource_group`        | string | Name of resource group to create VPC                                             | `asset-development`                                                                                                                                                                                                   |
-| `generation`            | number | Generation for VPC                                                               |
-| `classic_access`        | bool   | Enable VPC Classic Access. Note: only one VPC per region can have classic access | `false`                                                                                                                                                                                                               |
-| `enable_public_gateway` | bool   | Enable public gateways, true or false                                            | `false`                                                                                                                                                                                                               |
-| `cidr_blocks`           | list   | A list of tier subnet CIDR blocks. If no CIDRs are provided, the subnets will be created with 256 total ipv4 addresses | `["172.16.1.128/27","172.16.3.128/27","172.16.5.128/27"]
+Variable              | Type   | Description                                                                        | Default
+--------------------- | ------ | ---------------------------------------------------------------------------------- |--------
+unique_id             | string | A unique identifier need to provision resources. Must begin with a letter          | `"asset-multizone"`
+ibm_region            | string | IBM Cloud region where all resources will be deployed                              | 
+resource_group_id     | string | ID of resource group to create VPC                                                 | 
+classic_access        | bool   | Enable VPC Classic Access. Note: only one VPC per region can have classic access   | `false`
+enable_public_gateway | bool   | Enable public gateways for subnets, true or false                                  | `true`
+cidr_blocks           | list   | A list of tier subnet CIDR blocks                                                  | `[ "10.10.10.0/24", "10.10.20.0/24", "10.10.30.0/24" ]`
+acl_rules             | list   | Access control list rule set                                                       | `[`<br>`{`<br>`name = "allow-all-inbound"`<br>`action = "allow"`<br>`source = "0.0.0.0/0"`<br>`destination = "0.0.0.0/0"`<br>`direction = "inbound"`<br>`},`<br>`{`<br>`name = "allow-all-outbound"`<br>`action = "allow"`<br>`source = "0.0.0.0/0"`<br>`destination = "0.0.0.0/0"`<br>`direction = "outbound"`<br>`}`<br>`]`
+security_group_rules  | map    | List of security group rules to be added to default security group                 | `{`<br>`allow_all_inbound = {`<br>`source = "0.0.0.0/0"`<br>`direction = "inbound"`<br>`}`<br>`}`
 
 -----
 

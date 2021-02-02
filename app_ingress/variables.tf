@@ -78,12 +78,6 @@ variable subdomain {
     default     = "test"
 }
 
-variable dns_subdomain {
-    description = "Subdomain for the DNS record"
-    type        = string
-    default     = "www"
-}
-
 variable domain {
     description = "The domain to add to CIS"
     type        = string
@@ -154,7 +148,7 @@ variable port {
 variable target_port {
     description = "Target port for application"
     type        = string
-    default     = "8080"
+    default     = 8080
 }
 
 ##############################################################################

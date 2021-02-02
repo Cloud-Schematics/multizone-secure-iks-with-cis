@@ -4,7 +4,7 @@
 
 output vpc_id {
   description = "ID of VPC created"
-  value       = module.vpc.vpc_id
+  value       = ibm_is_vpc.vpc.id
 }
 
 ##############################################################################
@@ -14,9 +14,9 @@ output vpc_id {
 # List of subnet IDs
 ##############################################################################
 
-output subnet_ids {
-  description = "List of subnet ids in vpc tier 1"
-  value       = module.vpc.subnet_ids
+output subnets {
+  description = "List of maps containing subnet ids and zones"
+  value       = module.subnets.subnets
 }
 
 ##############################################################################
@@ -28,18 +28,7 @@ output subnet_ids {
 
 output acl_id {
   description = "ID of ACL created"
-  value       = module.vpc.acl_id
-}
-
-##############################################################################
-
-##############################################################################
-# Cluster ID
-##############################################################################
-
-output cluster_id {
-    description = "ID of cluster created"
-    value       = module.cluster.cluster_id
+  value       = ibm_is_network_acl.multizone_acl.id
 }
 
 ##############################################################################

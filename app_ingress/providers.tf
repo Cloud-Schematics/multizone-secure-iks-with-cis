@@ -1,0 +1,46 @@
+##############################################################################
+# Terraform Providers
+##############################################################################
+
+terraform {
+  required_providers {
+    ibm = {
+      source = "IBM-Cloud/ibm"
+      version = "1.19.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.0"
+    }
+  }
+}
+
+##############################################################################
+
+
+##############################################################################
+# IBM Cloud Provider
+##############################################################################
+
+provider ibm {
+  ibmcloud_api_key      = var.ibmcloud_api_key
+  region                = var.ibm_region
+  generation            = var.generation
+  ibmcloud_timeout      = 60
+}
+
+##############################################################################
+
+
+##############################################################################
+# Kubernetes Provider
+##############################################################################
+
+provider kubernetes {
+  host                   = data.ibm_container_cluster_config.cluster.host
+  client_certificate     = data.ibm_container_cluster_config.cluster.admin_certificate
+  client_key             = data.ibm_container_cluster_config.cluster.admin_key
+  cluster_ca_certificate = data.ibm_container_cluster_config.cluster.ca_certificate
+}
+
+##############################################################################
